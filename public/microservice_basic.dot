@@ -1,0 +1,39 @@
+digraph microservices{
+rankdir=LR; 
+compound=true;
+node[shape=rectangle]
+subgraph cluster_clientside{
+    {rank=same mobile_apps webapp }
+    mobile_apps, webapp;
+}
+subgraph cluster_aws {
+    bgcolor=lightgrey;
+    node[color=orange]
+    label = "aws\lap-southeast-1";
+    labeljust="r"   
+
+    subgraph cluster_vpc {
+      bgcolor=white;
+      label = "vpc";
+    subgraph cluster_lb {
+        bgcolor=lightblue;
+        style=dashed;
+      label = "Public subnet";
+      lb;
+    }
+    subgraph cluster_gc_1 {
+        style=dashed;
+        bgcolor=lightblue;
+        {rank=same orders products cart checkout }
+        label = "Private subnet";
+        orders, products, cart, checkout [shape=hexagon, fixedsize=true, width=1, height=1]
+        RDS_DB [shape=cylinder]
+    }
+    }
+  }
+//{mobile_apps, webapp} -> lb 
+webapp -> lb [lhead=cluster_lb];
+lb -> orders:s, products:w, cart:w, checkout:n
+orders, products, checkout -> RDS_DB;
+cart-> checkout
+}
